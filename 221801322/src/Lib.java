@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,8 +17,9 @@ public class Lib {
         private int charNum;
         private int lineNum;
         private int wordNum;
+        public Map<String,Long> wordFreq;
         private static final Pattern NON_BLACK_PATTERN = Pattern.compile("^.*[^\\s]+.*$");
-        private static final Pattern WORD_PATTERN = Pattern.compile("\\s*[A-Za-z]{4}[A-Za-z0-9]*\\s*");
+        private static final Pattern WORD_PATTERN = Pattern.compile("[A-Za-z]{4}[A-Za-z0-9]*");
         /**
          * @description CoreModule类构造函数
          * @param inputPath
@@ -26,6 +29,7 @@ public class Lib {
             charNum = 0;
             lineNum = 0;
             wordNum = 0;
+            wordFreq = new HashMap<String,Long>();
         }
         /**
          * @description 统计文件字符数
@@ -64,7 +68,7 @@ public class Lib {
             return lineNum;
         }
         /**
-         * @description 从文件中提取单词
+         * @description 从文件中提取单词，并统计所有单词词频
          * @return void
          */
         private void extractWord() throws IOException {
@@ -74,8 +78,27 @@ public class Lib {
             fileInputStream.read(strBuffer);
             String fileStr = new String(strBuffer,"UTF-8");
             Matcher matcher = WORD_PATTERN.matcher(fileStr);
+            boolean isWordExist = false;
+            long wordVal = 0L;
             while(matcher.find()) {
+                for (Map.Entry<String,Long> entry: wordFreq.entrySet()){
+                    if(entry.getKey().equals(matcher.group(0))) {
+                        isWordExist = true;
+                        wordVal = entry.getValue();
+                        break;
+                    }
+                }
+                if(isWordExist) {
+                    wordFreq.put(matcher.group(0),(wordVal + 1L));
+                    isWordExist = false;
+                } else {
+                    wordFreq.put(matcher.group(0),1L);
+                }
+                wordVal = 0L;
                 wordNum++;
+            }
+            for (Map.Entry<String,Long> entry: wordFreq.entrySet()){
+                System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         }
     }
