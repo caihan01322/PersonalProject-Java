@@ -22,6 +22,7 @@ public class WordCount {
     public void running() throws IOException {
         Lib.CoreModule core = new Lib.CoreModule(inputPath);
         System.out.println("characters: " + core.countChar());
+        System.out.println("lines: " + core.countLine());
     }
     /**
      * @description 程序运行入口
