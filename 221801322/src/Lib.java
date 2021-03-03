@@ -1,6 +1,5 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +17,7 @@ public class Lib {
         private int lineNum;
         private int wordNum;
         public Map<String,Long> wordFreq;
+        private static final int WORD_FREQ_LIMIT = 10;
         private static final Pattern NON_BLACK_PATTERN = Pattern.compile("^.*[^\\s]+.*$");
         private static final Pattern WORD_PATTERN = Pattern.compile("[A-Za-z]{4}[A-Za-z0-9]*");
         /**
@@ -68,6 +68,30 @@ public class Lib {
             return lineNum;
         }
         /**
+         * @description 统计频率最高的10个单词
+         * @return mostFreqWord
+         */
+        public LinkedHashMap<String,Long> countWordFreq() {
+            ArrayList<Map.Entry<String, Long>> wordList = new ArrayList<Map.Entry<String,Long>>(wordFreq.entrySet());
+            LinkedHashMap<String,Long> mostFreqWord = new LinkedHashMap<String,Long>();
+            Collections.sort(wordList,(map1,map2) -> {
+                if(map1.getValue() == map2.getValue()) {
+                    return map1.getKey().compareTo(map2.getKey());
+                } else {
+                    return map2.getValue().compareTo(map1.getValue());
+                }
+            });
+            int count = 0;
+            for(Map.Entry<String, Long> mapping:wordList) {
+                mostFreqWord.put(mapping.getKey(),mapping.getValue());
+                count++;
+                if(count == 10) {
+                    break;
+                }
+            }
+            return mostFreqWord;
+        }
+        /**
          * @description 从文件中提取单词，并统计所有单词词频
          * @return void
          */
@@ -81,7 +105,7 @@ public class Lib {
             boolean isWordExist = false;
             long wordVal = 0L;
             while(matcher.find()) {
-                for (Map.Entry<String,Long> entry: wordFreq.entrySet()){
+                for (Map.Entry<String,Long> entry: wordFreq.entrySet()) {
                     if(entry.getKey().equals(matcher.group(0))) {
                         isWordExist = true;
                         wordVal = entry.getValue();
@@ -96,9 +120,6 @@ public class Lib {
                 }
                 wordVal = 0L;
                 wordNum++;
-            }
-            for (Map.Entry<String,Long> entry: wordFreq.entrySet()){
-                System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         }
     }

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Map;
 
 /**
  * @author caihan01322
@@ -24,6 +25,10 @@ public class WordCount {
         System.out.println("characters: " + core.countChar());
         System.out.println("words: " + core.countWord());
         System.out.println("lines: " + core.countLine());
+        Map<String,Long> mostFreqWord = core.countWordFreq();
+        for(Map.Entry<String,Long> entry: mostFreqWord.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
     }
     /**
      * @description 程序运行入口
