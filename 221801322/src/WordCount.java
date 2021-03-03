@@ -1,9 +1,8 @@
 import java.io.*;
-import java.util.Map;
 
 /**
  * @author caihan01322
- *
+ * @description 统计文件内容指标
  */
 public class WordCount {
     public String inputPath;
@@ -22,14 +21,8 @@ public class WordCount {
      */
     public void running() throws IOException {
         Lib.CoreModule core = new Lib.CoreModule(inputPath);
-        System.out.println("characters: " + core.countChar());
-        System.out.println("words: " + core.countWord());
-        System.out.println("lines: " + core.countLine());
-        Map<String,Long> mostFreqWord = core.countWordFreq();
-        for(Map.Entry<String,Long> entry: mostFreqWord.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-        core.writeToFile(outputPath);
+        Lib.AnswerModule answer= new Lib.AnswerModule(core);
+        answer.writeToFile(outputPath);
     }
     /**
      * @description 程序运行入口
