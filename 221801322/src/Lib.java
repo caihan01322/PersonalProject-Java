@@ -102,23 +102,12 @@ public class Lib {
             fileInputStream.read(strBuffer);
             String fileStr = new String(strBuffer,"UTF-8");
             Matcher matcher = WORD_PATTERN.matcher(fileStr);
-            boolean isWordExist = false;
-            long wordVal = 0L;
             while(matcher.find()) {
-                for (Map.Entry<String,Long> entry: wordFreq.entrySet()) {
-                    if(entry.getKey().equals(matcher.group(0))) {
-                        isWordExist = true;
-                        wordVal = entry.getValue();
-                        break;
-                    }
-                }
-                if(isWordExist) {
-                    wordFreq.put(matcher.group(0),(wordVal + 1L));
-                    isWordExist = false;
+                if(wordFreq.containsKey(matcher.group(0))) {
+                    wordFreq.put(matcher.group(0),(wordFreq.get(matcher.group(0)) + 1L));
                 } else {
                     wordFreq.put(matcher.group(0),1L);
                 }
-                wordVal = 0L;
                 wordNum++;
             }
         }
