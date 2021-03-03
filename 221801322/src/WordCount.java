@@ -29,6 +29,7 @@ public class WordCount {
         for(Map.Entry<String,Long> entry: mostFreqWord.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
+        core.writeToFile(outputPath);
     }
     /**
      * @description 程序运行入口

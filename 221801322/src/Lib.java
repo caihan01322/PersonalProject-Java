@@ -10,13 +10,16 @@ import java.util.regex.Pattern;
 public class Lib {
     static class CoreModule {
         private File inputFile;
+        private File outputFile;
         private FileReader fileReader;
         private BufferedReader bufferedReader;
-        public FileInputStream fileInputStream;
+        private BufferedWriter bufferedWriter;
+        private FileInputStream fileInputStream;
         private int charNum;
         private int lineNum;
         private int wordNum;
-        public Map<String,Long> wordFreq;
+        private Map<String,Long> wordFreq;
+        private LinkedHashMap<String,Long> mostFreqWord;
         private static final int WORD_FREQ_LIMIT = 10;
         private static final Pattern NON_BLACK_PATTERN = Pattern.compile("^.*[^\\s]+.*$");
         private static final Pattern WORD_PATTERN = Pattern.compile("[A-Za-z]{4}[A-Za-z0-9]*");
@@ -73,7 +76,7 @@ public class Lib {
          */
         public LinkedHashMap<String,Long> countWordFreq() {
             ArrayList<Map.Entry<String, Long>> wordList = new ArrayList<Map.Entry<String,Long>>(wordFreq.entrySet());
-            LinkedHashMap<String,Long> mostFreqWord = new LinkedHashMap<String,Long>();
+            mostFreqWord = new LinkedHashMap<String,Long>();
             Collections.sort(wordList,(map1,map2) -> {
                 if(map1.getValue() == map2.getValue()) {
                     return map1.getKey().compareTo(map2.getKey());
@@ -90,6 +93,24 @@ public class Lib {
                 }
             }
             return mostFreqWord;
+        }
+        /**
+         * @description 将统计结果写入文件
+         * @return void
+         */
+        public void writeToFile(String outputPath) throws IOException {
+            outputFile = new File(outputPath);
+            bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            StringBuilder resultStr = new StringBuilder();
+            resultStr.append("characters: " + charNum + "\n");
+            resultStr.append("words: " + wordNum + "\n");
+            resultStr.append("lines: " + lineNum + "\n");
+            for(Map.Entry<String,Long> entry: mostFreqWord.entrySet()) {
+                resultStr.append(entry.getKey() + ": " + entry.getValue() + "\n");
+            }
+            System.out.println(resultStr.toString());
+            bufferedWriter.write(resultStr.toString());
+            bufferedWriter.close();
         }
         /**
          * @description 从文件中提取单词，并统计所有单词词频
