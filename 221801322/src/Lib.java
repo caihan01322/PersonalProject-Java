@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,10 +32,10 @@ public class Lib {
          * @return charNum
          */
         public int countChar() throws IOException {
-            FileReader fileReader = new FileReader(INPUT_FILE);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(INPUT_FILE));
             int fileChar;
             int charNum = 0;
-            while((fileChar = fileReader.read()) != -1) {
+            while((fileChar = bufferedReader.read()) != -1) {
                 if (fileChar <= 127) {
                     charNum++;
                 }
@@ -84,7 +83,7 @@ public class Lib {
             }
             ArrayList<Map.Entry<String,Integer>> wordList = new ArrayList<>(WORD_FREQ.entrySet());
             LinkedHashMap<String,Integer> mostFreqWord = new LinkedHashMap<>();
-            wordList.sort((map1, map2) -> {
+            wordList.sort((map1,map2) -> {
                 if (map1.getValue().equals(map2.getValue())) {
                     return map1.getKey().compareTo(map2.getKey());
                 } else {
@@ -106,13 +105,13 @@ public class Lib {
          * @return void
          */
         private void extractWord() throws IOException {
-            FileInputStream fileInputStream = new FileInputStream(INPUT_FILE);
-            int strSize = fileInputStream.available();
-            byte[] strBuffer = new byte[strSize];
-            //noinspection ResultOfMethodCallIgnored
-            fileInputStream.read(strBuffer);
-            String fileStr = new String(strBuffer,StandardCharsets.UTF_8);
-            Matcher matcher = WORD_PATTERN.matcher(fileStr);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(INPUT_FILE));
+            StringBuilder strBuilder = new StringBuilder();
+            String fileStr;
+            while ((fileStr = bufferedReader.readLine()) != null) {
+                strBuilder.append(fileStr.toLowerCase()).append("\n");
+            }
+            Matcher matcher = WORD_PATTERN.matcher(strBuilder.toString());
             while(matcher.find()) {
                 if(WORD_FREQ.containsKey(matcher.group(0))) {
                     WORD_FREQ.put(matcher.group(0),(WORD_FREQ.get(matcher.group(0)) + 1));
