@@ -1,5 +1,3 @@
-import java.io.*;
-
 /**
  * @author caihan01322
  * @description 统计文件内容指标
@@ -19,7 +17,7 @@ public class WordCount {
      * @description 运行主函数
      * @return void
      */
-    public void running() throws IOException {
+    public void running() {
         Lib.CoreModule core = new Lib.CoreModule(inputPath);
         Lib.AnswerModule answer= new Lib.AnswerModule(core);
         answer.writeToFile(outputPath);
@@ -28,9 +26,14 @@ public class WordCount {
      * @description 程序运行入口
      * @param args
      */
-    public static void main(String[] args) throws IOException {
-        if (args.length < 2) {
-            System.out.println("参数不足");
+    public static void main(String[] args) {
+        try {
+            if (args.length < 2) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            System.out.println("命令行参数个数不足2个！");
+            e.printStackTrace();
             return ;
         }
         WordCount wordCount = new WordCount(args[0],args[1]);
