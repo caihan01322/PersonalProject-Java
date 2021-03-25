@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,11 +71,16 @@ public class Lib {
          */
         public int countLine() {
             try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(INPUT_FILE));
-                String lineStr;
+                FileInputStream fileInputStream = new FileInputStream(INPUT_FILE);
+                int strSize = fileInputStream.available();
+                byte[] strBuffer = new byte[strSize];
+                //noinspection ResultOfMethodCallIgnored
+                fileInputStream.read(strBuffer);
+                String fileStr = new String(strBuffer, StandardCharsets.UTF_8);
+                String[] strArr = fileStr.replace("\r"," ").split("\n");
                 int lineNum = 0;
-                while ((lineStr = bufferedReader.readLine()) != null) {
-                    if(NON_BLACK_PATTERN.matcher(lineStr).matches()) {
+                for(String str : strArr){
+                    if(NON_BLACK_PATTERN.matcher(str).matches()) {
                         lineNum++;
                     }
                 }
